@@ -7,7 +7,7 @@ $api = new YPoolWallet("your api key","your secret");
 var_dump($api->getBalance(YPoolCurrencies::BITCOIN));
 
 // send 0.12345 litecoins to a target address (the token is optional, but protects from accidentally calling the same function twice)
-var_dump($api->sendCoins(YPoolCurrencies::LITECOIN,"target address", 0.12345,"some token"));
+var_dump($api->sendCoins(YPoolCurrencies::LITECOIN,"target address", 0.12345,"api example call","some token"));
 
 // get all your dogecoin receive addresses
 var_dump($api->getAddresses(YPoolCurrencies::DOGECOIN));

@@ -8,6 +8,7 @@ abstract class YPoolCurrencies
     const PRIMECOIN = "XPM";
     const RIECOIN = "RIC";
     const BITSHARESPTS = "PTS";
+    const PEERCOIN = "PPC";
 }
 
 class YPoolWallet
@@ -26,17 +27,28 @@ class YPoolWallet
     	return $this->sendRequest($call);
     }   
 
-    public function sendCoins($currency,$targetAddress,$amount) {
+    public function sendCoins($currency,$targetAddress,$amount,$privateNote="") {
 		$call;
-    	if( func_num_args() > 3 ) {
-    		$token = (string)func_get_arg(3);
-    		$hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$token}_{$this->secret}");
-    		$call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&token={$token}&hash={$hash}";
+    	if( func_num_args() > 4 && !empty(func_get_arg(4)) ) {
+    		$token = (string)func_get_arg(4);
+            if( empty($privateNote) ) {
+        		$hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$token}_{$this->secret}");
+        		$call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&token={$token}&hash={$hash}";
+            }
+            else {
+                $hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$privateNote}_{$token}_{$this->secret}");
+                $call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&note={$privateNote}&token={$token}&hash={$hash}";
+            }
     	}
-    	else
-    	{
-    		$hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$this->secret}");
-    		$call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&hash={$hash}";
+    	else {
+            if( empty($privateNote) ) {
+                $hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$this->secret}");
+                $call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&hash={$hash}";
+            }
+            else {
+                $hash = sha1("{$this->secret}_sendcoins_{$this->apiKey}_{$currency}_{$targetAddress}_{$amount}_{$privateNote}_{$this->secret}");
+                $call = "sendcoins?key={$this->apiKey}&currency={$currency}&address={$targetAddress}&amount={$amount}&note={$privateNote}&hash={$hash}";
+            }
     	}
     	return $this->sendRequest($call);
     }   
@@ -54,8 +66,7 @@ class YPoolWallet
     		$hash = sha1("{$this->secret}_generateaddress_{$this->apiKey}_{$currency}_{$token}_{$this->secret}");
     		$call = "generateaddress?key={$this->apiKey}&currency={$currency}&token={$token}&hash={$hash}";
     	}
-    	else
-    	{
+    	else {
     		$hash = sha1("{$this->secret}_generateaddress_{$this->apiKey}_{$currency}_{$this->secret}");
     		$call = "generateaddress?key={$this->apiKey}&currency={$currency}&hash={$hash}";
     	}
